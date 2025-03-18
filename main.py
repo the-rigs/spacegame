@@ -101,7 +101,8 @@ class Player(pygame.sprite.Sprite):
         self.vel = vec(0, 0)
         self.pos = vec(x, y)
         self.acc = vec(0, 0)
-
+        self.score = 0
+        self.start_game = False
     def powerup(self):
         self.power += 1
         self.power_time = pygame.time.get_ticks()
@@ -436,12 +437,18 @@ def start_screen():
                     waiting = False
                     mo.kill()
                     play.kill()
+                    player.start_game = True
                     # hs_entry()
-                if keystate[pygame.K_l]:
-                    waiting = False
+                # if keystate[pygame.K_l]:
+                #     waiting = False
+                #     mo.kill()
+                #     play.kill()
+                #     hs_screen()
+                if keystate[pygame.K_u]:
+                    # waiting = False
                     mo.kill()
                     play.kill()
-                    hs_screen()
+                    upgrades(player.score)
         # all_sprites.update()
         mo.rect.y += speedy
         play.rect.y += speedy
@@ -462,93 +469,93 @@ def start_screen():
         draw_text(screen, 'Starstorm', 64, WIDTH / 2, HEIGHT / 4, WHITE)
         draw_text(screen, 'Arrow Keys to Move and Space Bar to Shoot', 22, WIDTH / 2, HEIGHT / 2, WHITE)
         draw_text(screen, 'Press Space to Start', 22, WIDTH / 2, HEIGHT / 2 + 22, WHITE)
-        draw_text(screen, 'Press L for leaderboard', 22, WIDTH / 2, HEIGHT / 2 + 44, WHITE)
+        # draw_text(screen, 'Press L for leaderboard', 22, WIDTH / 2, HEIGHT / 2 + 44, WHITE)
         # *after* drawing everything, flip the display
         pygame.display.flip()
 
 
-def hs_entry():
-    base_font = pygame.font.Font(None, 32)
-    user_text = ''
-    input_rect = pygame.Rect(WIDTH / 2 - 75, HEIGHT / 2, 140, 32)
-    color_active = pygame.Color('lightskyblue3')
-    color_passive = pygame.Color(WHITE)
-    color = color_passive
-    answer = ''
-    active = False
-    running = True
-    while running:
-        for event in pygame.event.get():
-            # if user types QUIT then the screen will close
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if input_rect.collidepoint(event.pos):
-                    active = True
-                else:
-                    active = False
-            if event.type == pygame.KEYDOWN:
-                if len(user_text) < 15:
-                    # Check for backspace
-                    if event.key == pygame.K_BACKSPACE:
-                        user_text = user_text[:-1]
-                    else:
-                        user_text += event.unicode
-                # if event.type == pygame.KEYUP:
-                if event.key == pygame.K_RETURN:
-                    answer = user_text
-                    # print(answer)
-                    # paddle.name=answer
-                    running = False
-                    return answer
-                    # player.name1 = True
-        screen.fill((0, 0, 0))
-        if active:
-            color = color_active
-        else:
-            color = color_passive
-        screen.blit(background, background_rect)
-        pygame.draw.rect(screen, color, input_rect)
-        text_surface = base_font.render(user_text, True, (0, 0, 0))
-        screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
-        input_rect.w = 150
-        draw_text(screen, 'You have a high score', 34, WIDTH / 2, HEIGHT / 5, BLUE)
-        draw_text(screen, 'Enter a name below', 34, WIDTH / 2, HEIGHT / 4, BLUE)
-        pygame.display.flip()
-        clock.tick(60)
-        # return answer
-
-
-def hs_screen():
-    screen.blit(background, background_rect)
-    draw_text(screen, 'High Scores', 68, WIDTH / 2, 10, WHITE)
-    draw_text(screen, 'Press M for MENU', 25, WIDTH / 2, HEIGHT / 12 * 10, WHITE)
-    infile = open('highscore.txt', 'r')
-    space = 0
-    hsname = infile.readline()
-    while hsname != "":
-        hsname = hsname.rstrip('\n')
-        hsscore = infile.readline()
-        hsscore = hsscore.rstrip('\n')
-        draw_text(screen, hsname, 25, WIDTH / 2, 96 + space, WHITE)
-        space += 35
-        draw_text(screen, hsscore, 25, WIDTH / 2, 96 + space, WHITE)
-        space += 35
-        hsname = infile.readline()
-    infile.close
-    pygame.display.flip()
-    waiting = True
-    while waiting:
-        clock.tick(FPS)
-        for event in pygame.event.get():
-            keystate = pygame.key.get_pressed()
-            if event.type == pygame.QUIT:
-                pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if keystate[pygame.K_m]:
-                    waiting = False
-                    start_screen()
+# def hs_entry():
+#     base_font = pygame.font.Font(None, 32)
+#     user_text = ''
+#     input_rect = pygame.Rect(WIDTH / 2 - 75, HEIGHT / 2, 140, 32)
+#     color_active = pygame.Color('lightskyblue3')
+#     color_passive = pygame.Color(WHITE)
+#     color = color_passive
+#     answer = ''
+#     active = False
+#     running = True
+#     while running:
+#         for event in pygame.event.get():
+#             # if user types QUIT then the screen will close
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+#             if event.type == pygame.MOUSEBUTTONDOWN:
+#                 if input_rect.collidepoint(event.pos):
+#                     active = True
+#                 else:
+#                     active = False
+#             if event.type == pygame.KEYDOWN:
+#                 if len(user_text) < 15:
+#                     # Check for backspace
+#                     if event.key == pygame.K_BACKSPACE:
+#                         user_text = user_text[:-1]
+#                     else:
+#                         user_text += event.unicode
+#                 # if event.type == pygame.KEYUP:
+#                 if event.key == pygame.K_RETURN:
+#                     answer = user_text
+#                     # print(answer)
+#                     # paddle.name=answer
+#                     running = False
+#                     return answer
+#                     # player.name1 = True
+#         screen.fill((0, 0, 0))
+#         if active:
+#             color = color_active
+#         else:
+#             color = color_passive
+#         screen.blit(background, background_rect)
+#         pygame.draw.rect(screen, color, input_rect)
+#         text_surface = base_font.render(user_text, True, (0, 0, 0))
+#         screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+#         input_rect.w = 150
+#         draw_text(screen, 'You have a high score', 34, WIDTH / 2, HEIGHT / 5, BLUE)
+#         draw_text(screen, 'Enter a name below', 34, WIDTH / 2, HEIGHT / 4, BLUE)
+#         pygame.display.flip()
+#         clock.tick(60)
+#         # return answer
+#
+#
+# def hs_screen():
+#     screen.blit(background, background_rect)
+#     draw_text(screen, 'High Scores', 68, WIDTH / 2, 10, WHITE)
+#     draw_text(screen, 'Press M for MENU', 25, WIDTH / 2, HEIGHT / 12 * 10, WHITE)
+#     infile = open('highscore.txt', 'r')
+#     space = 0
+#     hsname = infile.readline()
+#     while hsname != "":
+#         hsname = hsname.rstrip('\n')
+#         hsscore = infile.readline()
+#         hsscore = hsscore.rstrip('\n')
+#         draw_text(screen, hsname, 25, WIDTH / 2, 96 + space, WHITE)
+#         space += 35
+#         draw_text(screen, hsscore, 25, WIDTH / 2, 96 + space, WHITE)
+#         space += 35
+#         hsname = infile.readline()
+#     infile.close
+#     pygame.display.flip()
+#     waiting = True
+#     while waiting:
+#         clock.tick(FPS)
+#         for event in pygame.event.get():
+#             keystate = pygame.key.get_pressed()
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#             if event.type == pygame.KEYDOWN:
+#                 if keystate[pygame.K_m]:
+#                     waiting = False
+#                     start_screen()
 
 
 def level_screen():
@@ -566,6 +573,9 @@ def level_screen():
             if event.type == pygame.KEYDOWN:
                 if keystate[pygame.K_a]:
                     waiting = False
+            if keystate[pygame.K_u]:
+                waiting = False
+                upgrades(player.score)
 
 
 def boss_level_screen():
@@ -617,6 +627,25 @@ def win_screen(score):
             if event.type == pygame.KEYDOWN:
                 if keystate[pygame.K_m]:
                     waiting = False
+
+def upgrades(score):
+    screen.blit(background, background_rect)
+    draw_text(screen, 'UPGRADES', 64, WIDTH / 2, HEIGHT/8, WHITE)
+    draw_text(screen, 'Press b For back', 32, WIDTH/6*5, HEIGHT/8, RED)
+    pygame.display.flip()
+    waiting = True
+    while waiting:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            keystate = pygame.key.get_pressed()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if keystate[pygame.K_b]:
+                    if player.start_game:
+                        start_screen()
+                    else:
+                        waiting = False
 
 
 pygame.init()
@@ -672,7 +701,7 @@ sprite_sheet = spritesheet.SpriteSheet(sprite_sheet_image)
 sprite_sheet_image2 = pygame.image.load('images/Explosion_sprite_sheet.png').convert_alpha()
 sprite_sheet2 = spritesheet.SpriteSheet(sprite_sheet_image2)
 
-Score = 0
+
 the_end = False
 level_score = 0
 end_level = False
@@ -703,7 +732,7 @@ while running:
         start_screen()
         player = Player()
         all_sprites.add(player)
-        player.name = hs_entry()
+        # player.name = hs_entry()
         Level = 1
         boss_level = 1
         top = 80
@@ -715,7 +744,7 @@ while running:
         for i in range(num_mob):
             create_mob()
         powerup_percent = 15
-        Score = 0
+        player.score = 0
         level_score = 0
         new_game = False
 
@@ -781,7 +810,7 @@ while running:
     for hit in hit_player4:
         player.health -= 5
     for hit in hit_mobs:
-        Score += 10
+        player.score += 10
         level_score += 10
         explo = Explosion(hit.rect.center, 'lg')
         all_sprites.add(explo)
@@ -792,7 +821,7 @@ while running:
             all_sprites.add(powerup)
             powerups.add(powerup)
     for hit in hit_mobs2:
-        Score += 10
+        player.score += 10
         level_score += 10
         explo = Explosion(hit.rect.center, 'lg')
         all_sprites.add(explo)
@@ -824,7 +853,7 @@ while running:
                 boss_alive = False
                 b.kill()
                 moth.kill()
-                Score += 50
+                player.score += 50
                 level_score += 50
                 new_level = True
                 for i in range(num_mob):
@@ -862,54 +891,54 @@ while running:
 
         the_end = True
 
-        high_score_dict = {}
-        infile = open('highscore.txt', 'r')
-        hsline = infile.readline()
-        while hsline != "":
-            hsentry = hsline.split(':')
-            hsname = hsentry[0]
-            hsscore = int(hsentry[1].rstrip('/n'))
-            high_score_dict[hsname] = hsscore
-            hsline = infile.readline()
-        infile.close
-        high_score_dict[name] = Score
-        # print('Name: ', name)
-        # print('first: ', high_score_dict)
-        # sort the dictionary
-        marklist = list(high_score_dict.items())
-        l = len(marklist)
-        for i in range(l - 1):
-            for j in range(i + 1, l):
-                if marklist[i][1] < marklist[j][1]:
-                    t = marklist[i]
-                    marklist[i] = marklist[j]
-                    marklist[j] = t
-                high_score_dict = dict(marklist)
-        keys_to_delete = []
-        # print('added dict', high_score_dict)
-        for i in range(len(high_score_dict)):
-            # print(i)
-            for key in high_score_dict.keys():
-                if i >= 5:
-                    # print(key)
-                    keys_to_delete.append(key)
-                    # print('delete: ', keys_to_delete)
-                i = i + 1
-            break
-        for key in keys_to_delete:
-            if key in high_score_dict:
-                del high_score_dict[key]
-        # print('end dict: ', high_score_dict)
-        outfile = open('highscore.txt', 'w')
-        for key, value in high_score_dict.items():
-            key = key.rstrip('\r')
-            outfile.write('%s:%s\n' % (key, value))
-        outfile.close()
+        # high_score_dict = {}
+        # infile = open('highscore.txt', 'r')
+        # hsline = infile.readline()
+        # while hsline != "":
+        #     hsentry = hsline.split(':')
+        #     hsname = hsentry[0]
+        #     hsscore = int(hsentry[1].rstrip('/n'))
+        #     high_score_dict[hsname] = hsscore
+        #     hsline = infile.readline()
+        # infile.close
+        # high_score_dict[name] = player.score
+        # # print('Name: ', name)
+        # # print('first: ', high_score_dict)
+        # # sort the dictionary
+        # marklist = list(high_score_dict.items())
+        # l = len(marklist)
+        # for i in range(l - 1):
+        #     for j in range(i + 1, l):
+        #         if marklist[i][1] < marklist[j][1]:
+        #             t = marklist[i]
+        #             marklist[i] = marklist[j]
+        #             marklist[j] = t
+        #         high_score_dict = dict(marklist)
+        # keys_to_delete = []
+        # # print('added dict', high_score_dict)
+        # for i in range(len(high_score_dict)):
+        #     # print(i)
+        #     for key in high_score_dict.keys():
+        #         if i >= 5:
+        #             # print(key)
+        #             keys_to_delete.append(key)
+        #             # print('delete: ', keys_to_delete)
+        #         i = i + 1
+        #     break
+        # for key in keys_to_delete:
+        #     if key in high_score_dict:
+        #         del high_score_dict[key]
+        # # print('end dict: ', high_score_dict)
+        # outfile = open('highscore.txt', 'w')
+        # for key, value in high_score_dict.items():
+        #     key = key.rstrip('\r')
+        #     outfile.write('%s:%s\n' % (key, value))
+        # outfile.close()
     if level_score == 100:
         new_level = True
         level_score = 0
     if Level == 10 and boss_alive == False:
-        win_screen(Score)
+        win_screen(player.score)
         winner == True
         player.kill()
         for m in mobs:
@@ -933,14 +962,14 @@ while running:
     all_sprites.draw(screen)
     ### draw text on screen
     draw_text(screen, 'Level ' + str(Level), 32, WIDTH / 2 + 300, 10, GREEN)
-    draw_text(screen, 'Score ' + str(Score), 32, WIDTH / 2 - 300, 10, GREEN)
+    draw_text(screen, 'Score ' + str(player.score), 32, WIDTH / 2 - 300, 10, GREEN)
     draw_text(screen, 'Health ', 32, WIDTH / 2, 10, GREEN)
     draw_shield_bar(screen, WIDTH / 2 + 50, 20, player.health)
     draw_lives(screen, WIDTH - 100, 13, player.lives, player_mini_img)
     # *after* drawing everything, flip the display
     pygame.display.flip()
     if the_end:
-        lose_screen(Score)
+        lose_screen(player.score)
         the_end = False
 
 pygame.quit()
