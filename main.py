@@ -470,6 +470,8 @@ def start_screen():
         draw_text(screen, 'Arrow Keys to Move and Space Bar to Shoot', 22, WIDTH / 2, HEIGHT / 2, WHITE)
         draw_text(screen, 'Press Space to Start', 22, WIDTH / 2, HEIGHT / 2 + 22, WHITE)
         # draw_text(screen, 'Press L for leaderboard', 22, WIDTH / 2, HEIGHT / 2 + 44, WHITE)
+        draw_text(screen, 'Press U for UPGRADES', 22, WIDTH / 2, HEIGHT / 2 + 44, WHITE)
+
         # *after* drawing everything, flip the display
         pygame.display.flip()
 
@@ -562,6 +564,7 @@ def level_screen():
     # screen.blit(background, background_rect)
     draw_text(screen, 'Level ' + str(Level + 1), 64, WIDTH / 2, HEIGHT / 4, GREEN)
     draw_text(screen, 'Press A to Continue', 18, WIDTH / 2, HEIGHT * 3 / 4, GREEN)
+    draw_text(screen, 'Press U for UPGRADES', 22, WIDTH / 2, HEIGHT * 3 / 4 + 44, WHITE)
     pygame.display.flip()
     waiting = True
     while waiting:
