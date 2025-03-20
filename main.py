@@ -507,6 +507,7 @@ def level_screen():
                 waiting = False
                 upgrades(player.score)
 
+
 def boss_level_screen():
     screen.blit(background, background_rect)
     draw_text(screen, ' Boss Level', 64, WIDTH / 2, HEIGHT / 4, GREEN)
@@ -523,6 +524,7 @@ def boss_level_screen():
                 if keystate[pygame.K_a]:
                     waiting = False
 
+
 def lose_screen(score):
     screen.blit(background, background_rect)
     draw_text(screen, 'Sorry You Lost', 64, WIDTH / 2, HEIGHT / 4, WHITE)
@@ -538,6 +540,7 @@ def lose_screen(score):
             if event.type == pygame.KEYDOWN:
                 if keystate[pygame.K_m]:
                     waiting = False
+
 
 def win_screen(score):
     screen.blit(background, background_rect)
@@ -559,8 +562,8 @@ def upgrades(score):
     screen.blit(background, background_rect)
     draw_text(screen, 'UPGRADES', 64, WIDTH / 2, HEIGHT/8, WHITE)
     # draw_text(screen, 'Press b For back', 32, WIDTH/6, HEIGHT/8, RED)
-    draw_text(screen, str(score), 32, WIDTH/6*5, HEIGHT/8, RED)
-    exit_button1 = Button(WIDTH/8, HEIGHT/8, exit_img, 0.8)
+    draw_text(screen, str(score), 32, WIDTH / 6 * 5, HEIGHT / 8, RED)
+    exit_button1 = Button(WIDTH / 8, HEIGHT / 8, exit_img, 0.8)
 
     exit_button1.draw(screen)
     pygame.display.flip()
@@ -572,17 +575,18 @@ def upgrades(score):
             if event.type == pygame.QUIT:
                 pygame.quit()
             # if event.type == pygame.KEYDOWN:
-                # if keystate[pygame.K_b]:
-                #     if player.start_game:
-                #         start_screen()
-                #     else:
-                #         waiting = False
+            # if keystate[pygame.K_b]:
+            #     if player.start_game:
+            #         start_screen()
+            #     else:
+            #         waiting = False
 
             if exit_button1.clicked and player.start_game == False:
                 # waiting = False
                 start_screen()
             else:
                 waiting = False
+
 
 pygame.init()
 # Groups
