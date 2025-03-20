@@ -36,7 +36,6 @@ def draw_lives(surf, x, y, lives, img):
         img_rect.y = y
         surf.blit(img, img_rect)
 
-
 def draw_shield_bar(surf, x, y, pct):
     if pct < 0:
         pct = 0
@@ -48,10 +47,7 @@ def draw_shield_bar(surf, x, y, pct):
     pygame.draw.rect(surf, GREEN, fill_rect)
     pygame.draw.rect(surf, BLACK, outline_rect, 2)
 
-
 font_name = pygame.font.match_font('arial')
-
-
 def draw_text(surf, text, size, x, y, Color):
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, Color)
@@ -59,8 +55,6 @@ def draw_text(surf, text, size, x, y, Color):
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
 
-
-# all_blocks =[]
 def create_mob():
     type = random.choice(['met', 'ali'])
     type = random.randrange(8)
@@ -72,7 +66,6 @@ def create_mob():
         m = MOB2(player)
         all_sprites.add(m)
         mobs2.add(m)
-
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -156,7 +149,6 @@ class Player(pygame.sprite.Sprite):
                 bullets.add(bullet2)
                 bullets.add(bullet3)
 
-
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, direction):
         pygame.sprite.Sprite.__init__(self)
@@ -173,7 +165,6 @@ class Bullet(pygame.sprite.Sprite):
     def update(self, dt):
         self.pos += self.direction * dt
         self.rect.center = self.pos
-
 
 class Bullet2(pygame.sprite.Sprite):
     def __init__(self, x, y, targetx, targety):
@@ -199,7 +190,6 @@ class Bullet2(pygame.sprite.Sprite):
         self.y = self.y + self.dy
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
-
 
 class MOB2(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -232,7 +222,6 @@ class MOB2(pygame.sprite.Sprite):
                 bullet4 = Bullet2(self.rect.x, self.rect.y, self.player.rect.x, self.player.rect.y)
                 all_sprites.add(bullet4)
                 bullets2.add(bullet4)
-
 
 class Boss(pygame.sprite.Sprite):
     def __init__(self):
@@ -270,7 +259,6 @@ class Boss(pygame.sprite.Sprite):
         if self.health <= 0:
             self.kill()
 
-
 class Mother(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -289,7 +277,6 @@ class Mother(pygame.sprite.Sprite):
             self.speedy = -4
         if b.health <= 0:
             self.kill()
-
 
 class MOB(pygame.sprite.Sprite):
     def __init__(self):
@@ -344,7 +331,6 @@ class MOB(pygame.sprite.Sprite):
             self.rect.y = random.randrange(-500, -100)
             self.speedy = random.randrange(3, 7)
 
-
 class Powerup(pygame.sprite.Sprite):
     def __init__(self, center):
         pygame.sprite.Sprite.__init__(self)
@@ -361,7 +347,6 @@ class Powerup(pygame.sprite.Sprite):
         self.rect.y += self.speedy
         if self.rect.y > HEIGHT:
             self.kill()
-
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, center, size, endgame=False):
@@ -412,8 +397,6 @@ class Explosion(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.animate()
-
-
 # initialize pygame and create window
 def start_screen():
     waiting = True
@@ -495,7 +478,6 @@ def level_screen():
                 waiting = False
                 upgrades(player.score)
 
-
 def boss_level_screen():
     screen.blit(background, background_rect)
     draw_text(screen, ' Boss Level', 64, WIDTH / 2, HEIGHT / 4, GREEN)
@@ -512,7 +494,6 @@ def boss_level_screen():
                 if keystate[pygame.K_a]:
                     waiting = False
 
-
 def lose_screen(score):
     screen.blit(background, background_rect)
     draw_text(screen, 'Sorry You Lost', 64, WIDTH / 2, HEIGHT / 4, WHITE)
@@ -528,7 +509,6 @@ def lose_screen(score):
             if event.type == pygame.KEYDOWN:
                 if keystate[pygame.K_m]:
                     waiting = False
-
 
 def win_screen(score):
     screen.blit(background, background_rect)
@@ -549,7 +529,9 @@ def win_screen(score):
 def upgrades(score):
     screen.blit(background, background_rect)
     draw_text(screen, 'UPGRADES', 64, WIDTH / 2, HEIGHT/8, WHITE)
-    draw_text(screen, 'Press b For back', 32, WIDTH/6*5, HEIGHT/8, RED)
+    draw_text(screen, 'Press b For back', 32, WIDTH/6, HEIGHT/8, RED)
+    draw_text(screen, str(score), 32, WIDTH/6*5, HEIGHT/8, RED)
+
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -565,7 +547,6 @@ def upgrades(score):
                     else:
                         waiting = False
 
-
 pygame.init()
 # Groups
 all_sprites = pygame.sprite.Group()
@@ -578,17 +559,7 @@ mobs2 = pygame.sprite.Group()
 bosss = pygame.sprite.Group()
 ##########
 
-
-explosion_anim = {}
-explosion_anim['lg'] = []
-# for i in range(16):
-#   filename = 'regularExplosion{}.png'.format(i)
-#   img = pygame.image.load(filename)
-#   img.set_colorkey(BLACK)
-#   img_lg = pygame.transform.scale(img,(75,75))
-#   explosion_anim['lg'].append(img_lg)
 aliens = []
-# explosion_anim['lg']=[]
 for i in range(1, 6):
     filename = 'images/ship{}.png'.format(i)
     img = pygame.image.load(filename)
@@ -625,7 +596,6 @@ level_score = 0
 end_level = False
 player = Player()
 moth = Mother()
-# b = Boss()
 boss_alive = False
 boss_level = 1
 b_level = 0
@@ -665,7 +635,6 @@ while running:
         player.score = 0
         level_score = 0
         new_game = False
-
     if new_level:
         level_screen()
         Level += 1
@@ -673,7 +642,6 @@ while running:
         level_score = 0
         num_mob +=5
         new_level = False
-
     if boss_level == 5:
         boss_level = 0
         boss_level_screen()
