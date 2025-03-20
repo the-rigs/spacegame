@@ -397,6 +397,30 @@ class Explosion(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.animate()
+
+class Button():
+    def __init__(self, x, y, image, scale):
+        self.width = image.get_width()
+        self.height = image.get_height()
+        self.image = pygame.transform.scale(image, (int(self.width * scale), int(self.height * scale)))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.clicked = False
+    def draw(self, surface):
+        action = False
+        #get mouse position
+        pos = pygame.mouse.get_pos()
+        #check mouseover and clicked conditions
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                self.clicked = True
+                action = True
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+        #draw button on screen
+        surface.blit(self.image, (self.rect.x, self.rect.y))
+        return action
+
 # initialize pygame and create window
 def start_screen():
     waiting = True
@@ -415,24 +439,28 @@ def start_screen():
             keystate = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if keystate[pygame.K_SPACE]:
-                    waiting = False
-                    mo.kill()
-                    play.kill()
-                    player.start_game = True
-                    # hs_entry()
-                # if keystate[pygame.K_l]:
-                #     waiting = False
-                #     mo.kill()
-                #     play.kill()
-                #     hs_screen()
-                if keystate[pygame.K_u]:
-                    # waiting = False
-                    mo.kill()
-                    play.kill()
-                    upgrades(player.score)
-        # all_sprites.update()
+            # if event.type == pygame.KEYDOWN:
+            #     if keystate[pygame.K_SPACE]:
+            #         waiting = False
+            #         mo.kill()
+            #         play.kill()
+            #         player.start_game = True
+            #     if keystate[pygame.K_u]:
+            #         # waiting = False
+            #         mo.kill()
+            #         play.kill()
+            #         upgrades(player.score)
+            if start_button.clicked:
+                waiting = False
+                mo.kill()
+                play.kill()
+                player.start_game = True
+            if exit_button.clicked:
+                waiting = False
+                mo.kill()
+                play.kill()
+                upgrades(player.score)
+                player.start_game = False
         mo.rect.y += speedy
         play.rect.y += speedy
         if mo.rect.top > HEIGHT + 90:
@@ -454,7 +482,8 @@ def start_screen():
         draw_text(screen, 'Press Space to Start', 22, WIDTH / 2, HEIGHT / 2 + 22, WHITE)
         # draw_text(screen, 'Press L for leaderboard', 22, WIDTH / 2, HEIGHT / 2 + 44, WHITE)
         draw_text(screen, 'Press U for UPGRADES', 22, WIDTH / 2, HEIGHT / 2 + 44, WHITE)
-
+        start_button.draw(screen)
+        exit_button.draw(screen)
         # *after* drawing everything, flip the display
         pygame.display.flip()
 
@@ -529,23 +558,31 @@ def win_screen(score):
 def upgrades(score):
     screen.blit(background, background_rect)
     draw_text(screen, 'UPGRADES', 64, WIDTH / 2, HEIGHT/8, WHITE)
-    draw_text(screen, 'Press b For back', 32, WIDTH/6, HEIGHT/8, RED)
+    # draw_text(screen, 'Press b For back', 32, WIDTH/6, HEIGHT/8, RED)
     draw_text(screen, str(score), 32, WIDTH/6*5, HEIGHT/8, RED)
+    exit_button1 = Button(WIDTH/8, HEIGHT/8, exit_img, 0.8)
 
+    exit_button1.draw(screen)
     pygame.display.flip()
     waiting = True
     while waiting:
         clock.tick(FPS)
         for event in pygame.event.get():
-            keystate = pygame.key.get_pressed()
+            # keystate = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if keystate[pygame.K_b]:
-                    if player.start_game:
-                        start_screen()
-                    else:
-                        waiting = False
+            # if event.type == pygame.KEYDOWN:
+                # if keystate[pygame.K_b]:
+                #     if player.start_game:
+                #         start_screen()
+                #     else:
+                #         waiting = False
+
+            if exit_button1.clicked and player.start_game == False:
+                # waiting = False
+                start_screen()
+            else:
+                waiting = False
 
 pygame.init()
 # Groups
@@ -590,6 +627,12 @@ sprite_sheet = spritesheet.SpriteSheet(sprite_sheet_image)
 sprite_sheet_image2 = pygame.image.load('images/Explosion_sprite_sheet.png').convert_alpha()
 sprite_sheet2 = spritesheet.SpriteSheet(sprite_sheet_image2)
 
+start_img = pygame.image.load('images/start_btn.png').convert_alpha()
+exit_img = pygame.image.load('images/exit_btn.png').convert_alpha()
+
+
+start_button = Button(WIDTH/6, HEIGHT-start_img.get_height()*2, start_img, 0.8)
+exit_button = Button(WIDTH/6*4, HEIGHT-exit_img.get_height()*2, exit_img, 0.8)
 
 the_end = False
 level_score = 0
