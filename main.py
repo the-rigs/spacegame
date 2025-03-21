@@ -401,7 +401,6 @@ class Button():
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
-                print(self.clicked)
                 action = True
         if pygame.mouse.get_pressed()[0] == 0:
             self.clicked = False
@@ -464,7 +463,7 @@ def start_screen():
 def level_screen():
     # screen.blit(background, background_rect)
     store_button = Button(WIDTH / 2, HEIGHT / 8 * 5.3, store_img, 0.3)
-    resume_button = Button(WIDTH / 2, HEIGHT/8*5.3, resume_img, 0.9)
+    resume_button = Button(WIDTH / 2, HEIGHT/8*5, resume_img, 0.9)
 
     waiting = True
     while waiting:
@@ -535,10 +534,11 @@ def upgrades(score):
             # keystate = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if exit_button.clicked:
+            if exit_button.clicked and player.start_game:
                 waiting = False
-                player.start_game = False
+            if exit_button.clicked and not player.start_game:
                 start_screen()
+
         screen.blit(background, background_rect)
         draw_text(screen, 'UPGRADES', 64, WIDTH / 2, HEIGHT / 8, WHITE)
         draw_text(screen, str(score), 32, WIDTH / 6 * 5, HEIGHT / 8, RED)
@@ -643,6 +643,7 @@ while running:
         player.score = 0
         level_score = 0
         new_game = False
+        player.start_game = True
     if new_level:
         level_screen()
         Level += 1
