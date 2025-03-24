@@ -464,7 +464,6 @@ def level_screen():
     # screen.blit(background, background_rect)
     store_button = Button(WIDTH / 2, HEIGHT / 8 * 5.3, store_img, 0.3)
     resume_button = Button(WIDTH / 2, HEIGHT/8*5, resume_img, 0.9)
-
     waiting = True
     while waiting:
         clock.tick(FPS)
@@ -476,69 +475,65 @@ def level_screen():
             if store_button.clicked:
                 waiting = False
                 upgrades(player.score)
+        screen.blit(background, background_rect)
         draw_text(screen, 'Level ' + str(Level + 1), 64, WIDTH / 2, HEIGHT / 4, GREEN)
         store_button.draw(screen)
         resume_button.draw(screen)
         pygame.display.flip()
 def boss_level_screen():
-    screen.blit(background, background_rect)
-    draw_text(screen, ' Boss Level', 64, WIDTH / 2, HEIGHT / 4, GREEN)
-    draw_text(screen, 'Press A to Continue', 18, WIDTH / 2, HEIGHT * 3 / 4, GREEN)
-    pygame.display.flip()
+    resume_button = Button(WIDTH / 2, HEIGHT/8*5, resume_img, 0.9)
     waiting = True
     while waiting:
         clock.tick(FPS)
         for event in pygame.event.get():
-            keystate = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if keystate[pygame.K_a]:
-                    waiting = False
+            if resume_button.clicked:
+                waiting = False
+        screen.blit(background, background_rect)
+        draw_text(screen, ' Boss Level', 64, WIDTH / 2, HEIGHT / 4, GREEN)
+        resume_button.draw(screen)
+        pygame.display.flip()
 def lose_screen(score):
-    screen.blit(background, background_rect)
-    draw_text(screen, 'Sorry You Lost', 64, WIDTH / 2, HEIGHT / 4, WHITE)
-    draw_text(screen, 'Press M for menu', 32, WIDTH / 2, HEIGHT * 3 / 4, GREEN)
-    pygame.display.flip()
+    resume_button = Button(WIDTH / 2, HEIGHT/8*5, resume_img, 0.9)
     waiting = True
     while waiting:
         clock.tick(FPS)
         for event in pygame.event.get():
-            keystate = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if keystate[pygame.K_m]:
-                    waiting = False
+            if resume_button.clicked:
+                waiting = False
+        screen.blit(background, background_rect)
+        draw_text(screen, 'Sorry You Lost', 64, WIDTH / 2, HEIGHT / 4, WHITE)
+        resume_button.draw(screen)
+        pygame.display.flip()
 def win_screen(score):
-    screen.blit(background, background_rect)
-    draw_text(screen, 'You Won', 64, WIDTH / 2, HEIGHT / 4, WHITE)
-    draw_text(screen, 'Press M For menu', 32, WIDTH / 2, HEIGHT * 3 / 4, RED)
-    pygame.display.flip()
+    resume_button = Button(WIDTH / 2, HEIGHT/8*5, resume_img, 0.9)
     waiting = True
     while waiting:
         clock.tick(FPS)
         for event in pygame.event.get():
-            keystate = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if keystate[pygame.K_m]:
-                    waiting = False
+            if resume_button.clicked:
+                waiting = False
+        screen.blit(background, background_rect)
+        draw_text(screen, 'You Won', 64, WIDTH / 2, HEIGHT / 4, WHITE)
+        resume_button.draw(screen)
+        pygame.display.flip()
 def upgrades(score):
     exit_button = Button(WIDTH / 11, HEIGHT / 13, exit_img, 0.3)
     waiting = True
     while waiting:
         clock.tick(FPS)
         for event in pygame.event.get():
-            # keystate = pygame.key.get_pressed()
             if event.type == pygame.QUIT:
                 pygame.quit()
             if exit_button.clicked and player.start_game:
                 waiting = False
             if exit_button.clicked and not player.start_game:
                 start_screen()
-
         screen.blit(background, background_rect)
         draw_text(screen, 'UPGRADES', 64, WIDTH / 2, HEIGHT / 8, WHITE)
         draw_text(screen, str(score), 32, WIDTH / 6 * 5, HEIGHT / 8, RED)
@@ -559,12 +554,33 @@ bosss = pygame.sprite.Group()
 ##########
 
 aliens = []
+grey_ship = []
+red_ship = []
+yellow_ship = []
 for i in range(1, 6):
     filename = 'images/ship{}.png'.format(i)
     img = pygame.image.load(filename)
     img.set_colorkey(BLACK)
     img_lg = pygame.transform.scale(img, (75, 75))
     aliens.append(img_lg)
+for i in range(1, 10):
+    filename = 'images/player_images/grey{}.png'.format(i)
+    img = pygame.image.load(filename)
+    img.set_colorkey(BLACK)
+    img_grey = pygame.transform.scale(img, (img.get_width(), img.get_height()))
+    grey_ship.append(img_grey)
+for i in range(1, 12):
+    filename = 'images/player_images/red{}.png'.format(i)
+    img = pygame.image.load(filename)
+    img.set_colorkey(BLACK)
+    img_red = pygame.transform.scale(img, (img.get_width(), img.get_height()))
+    red_ship.append(img_red)
+for i in range(1, 8):
+    filename = 'images/player_images/yellow{}.png'.format(i)
+    img = pygame.image.load(filename)
+    img.set_colorkey(BLACK)
+    img_yellow = pygame.transform.scale(img, (img.get_width(), img.get_height()))
+    yellow_ship.append(img_yellow)
 background = pygame.image.load('images/galaxy.png')
 boss = pygame.image.load('images/boss.png')
 mother = pygame.image.load('images/mother.png')
@@ -649,8 +665,23 @@ while running:
         Level += 1
         boss_level += 1
         level_score = 0
-        num_mob +=5
+        num_mob +=10
         new_level = False
+        for m in mobs:
+            m.kill()
+        for m in mobs2:
+            m.kill()
+        for e in expl:
+            e.kill()
+        for b in bullets:
+            b.kill()
+        for p in powerups:
+            p.kill()
+        for b in bullets2:
+            b.kill()
+        for i in range(num_mob):
+            create_mob()
+
     if boss_level == 5:
         boss_level = 0
         boss_level_screen()
@@ -769,7 +800,6 @@ while running:
     if player.lives == 0:
         # runnning = False
         new_game = True
-        name = player.name
         player.kill()
         for m in mobs:
             m.kill()
