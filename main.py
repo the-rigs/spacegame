@@ -506,6 +506,7 @@ def lose_screen(score):
                 waiting = False
         screen.blit(background, background_rect)
         draw_text(screen, 'Sorry You Lost', 64, WIDTH / 2, HEIGHT / 4, WHITE)
+        draw_text(screen, 'Final Score: ' + str(player.score), 64, WIDTH / 2, HEIGHT / 2, WHITE)
         resume_button.draw(screen)
         pygame.display.flip()
 def win_screen(score):
@@ -520,6 +521,7 @@ def win_screen(score):
                 waiting = False
         screen.blit(background, background_rect)
         draw_text(screen, 'You Won', 64, WIDTH / 2, HEIGHT / 4, WHITE)
+        draw_text(screen, 'Final Score: '+str(player.score), 64, WIDTH / 2, HEIGHT / 2, WHITE)
         resume_button.draw(screen)
         pygame.display.flip()
 def upgrades(score):
